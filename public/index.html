@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Omega</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="site-header">
+    <h1 class="logo" onclick="cerrarCarrito()">TIENDA OMEGA</h1>
+    <nav class="header-nav">
+        <!-- Visible cuando NO hay sesión activa (estado por defecto) -->
+        <div id="nav-guest">
+            <button class="btn-nav" onclick="abrirModal('modal-login')">Iniciar Sesión</button>
+            <button class="btn-nav btn-register" onclick="abrirModal('modal-registro')">Registrarse</button>
+        </div>
+        <!-- Visible cuando SÍ hay sesión activa. JS lo muestra tras login exitoso o al verificar sesión. -->
+        <div id="nav-user" style="display:none;">
+            <span class="saludo" id="saludo-usuario"></span>
+            <button class="btn-nav btn-logout" onclick="cerrarSesion()">⏻ Salir</button>
+        </div>
+        <!-- Botón del carrito siempre visible -->
+        <button class="btn-carrito" onclick="toggleCarrito()">
+            🛒 <span id="contador-carrito" class="badge">0</span>
+        </button>
+    </nav>
+</header>
+
+<!-- ==================== LAYOUT PRINCIPAL ==================== -->
+<div class="main-layout">
+
+    <!-- El grid de productos se genera dinámicamente en script.js (renderizarCatalogo) -->
+    <main class="catalogo-main" id="catalogo-main">
+        <div id="contenedor_productos" class="grid_productos"></div>
+    </main>
+
+    <!-- Panel lateral del carrito: oculto por defecto (fuera de pantalla).
+         JS añade/quita la clase "abierto" para deslizarlo. -->
+    <aside class="carrito-aside" id="carrito-aside">
+        <div class="cart-panel cyber-theme">
+            <div class="cart-header">
+                <div class="glitch-icon">🛒</div>
+                <h2 class="cart-title">Inventario</h2>
+                <button class="btn-cerrar-carrito" onclick="cerrarCarrito()">✕</button>
+            </div>
+
+            <!-- Lista de ítems generada por JS (actualizarCarritoUI) -->
+            <div class="cart-items" id="items-c">
+                <div class="cart-empty">
+                    <div class="cart-empty-icon pulse">📦</div>
+                    <p>No hay loot en tu inventario</p>
+                </div>
+            </div>
+
+            <div class="cart-summary">
+                <div class="cart-summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal-c" class="digital-font">$0</span>
+                </div>
+                <!-- Descuento del 10% activado cuando el subtotal supera $100.000 -->
+                <div class="cart-summary-row discount">
+                    <span>⚡ Promo -10%:</span>
+                    <span id="descuento-c" class="digital-font">-$0</span>
+                </div>
+                <div class="cart-summary-row total">
+                    <span>Total:</span>
+                    <span id="total-c" class="digital-font neon-text">$0</span>
+                </div>
+            </div>
+
+            <!-- Deshabilitado mientras el carrito esté vacío -->
+            <button onclick="irAPagar()" class="btn-checkout cyber-btn" id="btn-checkout" disabled>
+                Iniciar Transacción
+            </button>
+        </div>
+    </aside>
+</div>
+
+<!-- ==================== MODAL LOGIN ==================== -->
+<div class="modal-overlay" id="modal-login">
+    <div class="modal">
+        <button class="modal-close" onclick="cerrarModal('modal-login')">✕</button>
+        <h2 class="modal-titulo">Iniciar Sesión</h2>
+        <p class="modal-sub">Accede a tu cuenta Omega</p>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <!-- Enter en este input también dispara hacerLogin() (ver script.js) -->
+            <input type="password" id="login-pass" placeholder="••••••••">
+        </div>
+
+        <p id="login-msg" class="form-msg"></p>
+        <button class="btn-form" id="btn-login" onclick="hacerLogin()">Ingresar</button>
+
+        <p class="modal-switch">
+            ¿No tienes cuenta?
+            <span onclick="cambiarModal('modal-login','modal-registro')">Regístrate</span>
+        </p>
+    </div>
+</div>
+
+<!-- ==================== MODAL REGISTRO ==================== -->
+<div class="modal-overlay" id="modal-registro">
+    <div class="modal">
+        <button class="modal-close" onclick="cerrarModal('modal-registro')">✕</button>
+        <h2 class="modal-titulo">Crear Cuenta</h2>
+        <p class="modal-sub">Únete a la Tienda Omega</p>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="reg-nombre" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <!-- Enter en este input también dispara hacerRegistro() (ver script.js) -->
+            <input type="password" id="reg-pass" placeholder="Mín. 6 caracteres">
+        </div>
+
+        <p id="reg-msg" class="form-msg"></p>
+        <button class="btn-form" id="btn-registro" onclick="hacerRegistro()">Crear Cuenta</button>
+
+        <p class="modal-switch">
+            ¿Ya tienes cuenta?
+            <span onclick="cambiarModal('modal-registro','modal-login')">Inicia Sesión</span>
+        </p>
+    </div>
+</div>
+
+<!-- Toast de notificación: aparece al añadir productos al carrito -->
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
